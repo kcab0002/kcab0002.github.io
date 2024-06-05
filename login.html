@@ -28,12 +28,7 @@
             <label for="password">Password</label>
             <input type="password" id="password" placeholder="Password" required>
         </div>
-        <div class="form-group">
-            <button type="button" class="google-btn" onclick="signInWithGoogle()">
-                <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo" width="20" height="20">
-                <span>Sign in with Google</span>
-            </button>
-        </div>
+
         <button type="submit">Login</button>
     </form>
     <p style="color:#3498db; font-weight: 800; cursor: pointer;" onclick="create_account()">Create An Account </p>
@@ -85,18 +80,7 @@
         window.location.href = "signup.html";
     }
 
-    function signInWithGoogle() {
-        const clientId = '4t62hj34iqid68n5s5q10a5h19'; // Your Cognito App Client ID
-        const domain = 'new-cognit.auth.us-east-1.amazoncognito.com'; // Your Cognito domain
-        const redirectUri = 'https://kcab0002.github.io/index.html'; // This must match one of the "Allowed callback URLs" in your Cognito setup
-        const responseType = 'code'; // Use 'code' for the Authorization Code Grant flow
-        const scope = 'email openid'; // Include any other scopes as per your requirement
-        const url = `https://${domain}/oauth2/authorize?response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&identity_provider=Google`;
-
-        window.location.href = url;
-    }
-
-
+ 
     
 </script>
 </body>
@@ -105,32 +89,6 @@
 <style>
 
 
-.google-btn {
-            display: inline-flex;
-            align-items: center;
-            background-color: white;
-            color: #757575;
-            padding: 10px 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-  
-            cursor: pointer;
-            transition: background-color 0.3s;
-            text-align: center;
-        }
-
-        .google-btn:hover {
-            background-color: #f1f1f1;
-        }
-
-        .google-btn img {
-            margin-right: 10px;
-        }
-
-        .google-btn span {
-            font-weight: bold;
-        }
-body {
     font-family: 'Roboto', sans-serif;
     display: flex;
     justify-content: center;

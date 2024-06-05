@@ -462,25 +462,21 @@ border-radius: 10px;
     </script>
 
     <script>
-        // var isAuthenticated = localStorage.getItem('isAuthenticated');
+         var isAuthenticated = localStorage.getItem('isAuthenticated');
         var userEmail = localStorage.getItem('userEmail');
-      //  if (isAuthenticated !== null && isAuthenticated === 'true') {
-         //   console.log("User is authenticated!");
+        if (isAuthenticated !== null && isAuthenticated === 'true') {
+           console.log("User is authenticated!");
            
 
-            if (userEmail == null){
-                document.getElementById('userEmail').textContent = "Welcome";
-            } else if (userEmail == "null"){
-                document.getElementById('userEmail').textContent = "Welcome";
-            }
-            else {
+        
+    
                 document.getElementById('userEmail').textContent = 'Welcome, ' + userEmail;  
-            }
+            
 
-     //   } else {
-         //   window.location.href = "login.html";
-     //       alert("User is not authenticated!");
-    //    }
+       } else {
+            window.location.href = "login.html";
+            alert("User is not authenticated!");
+    /  }
 
         // button subscribe 
 
