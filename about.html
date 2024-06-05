@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="icon" type="image/x-icon" href="./assets/favicon.png">
+    <link rel="stylesheet" href="./assets/style.css">
+    <title>About | PixTag</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .nav-bar ul {
+            padding: 0;
+            margin: 0;
+            list-style-type: none;
+            text-align: center;
+        }
+
+        .nav-bar li {
+            display: inline;
+            margin-right: 15px;
+        }
+
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
+
+        .middle {
+            display: flex;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+      
+            margin-top: 50px;
+        }
+
+        .left {
+            width: 50%;
+            padding: 5em;
+            padding: 2em;
+            opacity: 0;
+            transform: translateX(-100%);
+            animation: slideInFromLeft 1s forwards ease-in-out;
+        }
+
+        .left h1 {
+            font-size: 2.5em;
+            margin-bottom: 0.5em;
+        }
+
+        .left p {
+            font-size: 1.2em;
+        }
+
+        .right {
+            width: 50%;
+            padding: 2em;
+            opacity: 0;
+            transform: translateX(100%);
+            animation: slideInFromRight 1s forwards ease-in-out;
+        }
+
+        .right img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            width: 100%;
+            text-align: center;
+            color: white;
+            padding: 20px 0;
+            background-color: #000000;
+            position: absolute;
+            bottom: 0;
+        }
+
+        @keyframes slideInFromLeft {
+            0% {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInFromRight {
+            0% {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="nav-bar" style="   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);">
+    <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="login.html">Sign Out</a></li>
+    </ul>
+</nav>
+
+<div class="middle">
+    <div class="left">
+        <h1>About PixTag</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </div>
+
+    <div class="right">
+        <img src="https://deeplobe.ai/wp-content/uploads/2023/06/Object-detection-Real-world-applications-and-benefits.png" alt="PixTag">
+    </div>
+</div>
+
+<footer>
+    <p>Front-end designed & developed by Mehyar Belal | Group 63 &copy; 2024</p>
+</footer>
+
+</body>
+</html>

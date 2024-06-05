@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="./assets/favicon.png">
+    <link rel="stylesheet" href="./assets/style.css">
+    <title>Gallery | PixTag</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin: 0;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .nav-bar ul {
+            padding: 0;
+            margin: 0;
+            list-style-type: none;
+            text-align: center;
+        }
+
+        .nav-bar li {
+            display: inline;
+            margin-right: 15px;
+        }
+
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
+
+        .outer-container {
+            padding: 0em 20em;
+            text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .outer-container h1 {
+            font-size: 4em;
+            animation: slideInDown 1s ease-in-out;
+        }
+
+        .outer-container h4 {
+            margin-top: 20px;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        .search-container {
+            margin-top: 20px;
+            width: 80%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 30px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+    
+        }
+
+        .search-container input:focus {
+            outline: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-container button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .search-container button:hover {
+            background-color: #003580;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .gallery img {
+            width: 90%;
+            height: 90%;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+
+        .gallery img.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 40px;
+            width: 60%;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .image-grid img {
+            width: 90%;
+            border-radius: 8px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-grid img:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        footer {
+            width: 100%;
+            text-align: center;
+            color: white;
+            padding: 20px 0;
+            background-color: #000000;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInDown {
+            0% {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="nav-bar" style="background-color: black; padding: 10px 0;   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);">
+    <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="login.html">Sign Out</a></li>
+    </ul>
+</nav>
+
+<div class="outer-container">
+    <h1>Search Images</h1>
+    <h4>Enter a thumbnail URL to get the full-size image.</h4>
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Enter a thumbnail URL...">
+        <button onclick="searchImages()">Submit</button>
+    </div>
+    <div class="image-grid" id="imageGrid"></div>
+</div>
+
+<footer>
+    <p>Front-end designed & developed by Mehyar Belal | Group 63 &copy; 2024</p>
+</footer>
+
+
+
+<script>
+    async function searchImages() {
+        const thumbnailURL = document.getElementById('searchInput').value.trim();
+        if (!thumbnailURL) {
+            alert('Please enter a thumbnail URL.');
+            return;
+        }
+
+        const response = await fetch('https://1s2x2orf48.execute-api.us-east-1.amazonaws.com/default/get_full_size_images', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ url: thumbnailURL })
+        });
+
+        const result = await response.json();
+        const imageGrid = document.getElementById('imageGrid');
+        imageGrid.innerHTML = '';
+
+        if (response.ok && result.Image_url) {
+            const img = document.createElement('img');
+            img.src = result.Image_url;
+            img.alt = 'Full Size Image';
+            imageGrid.appendChild(img);
+        } else {
+            imageGrid.textContent = 'No full-size image found for the provided thumbnail URL.';
+        }
+    }
+</script>
+</body>
+</html>

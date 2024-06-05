@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="./assets/favicon.png">
+    <link rel="stylesheet" href="./assets/style.css">
+    <title>Update Tags | PixTag</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin: 0;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .nav-bar ul {
+            padding: 0;
+            margin: 0;
+            list-style-type: none;
+            text-align: center;
+        }
+
+        .nav-bar li {
+            display: inline;
+            margin-right: 15px;
+        }
+
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
+
+        .outer-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .outer-container h1 {
+            font-size: 4em;
+            animation: slideInDown 1s ease-in-out;
+        }
+
+        .form-container {
+            width: 80%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-container input, .form-container button {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .form-container input {
+            padding: 15px 20px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 30px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .form-container input:focus {
+            outline: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-container button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .form-container button:hover {
+            background-color: #003580;
+        }
+
+        .notification {
+            width: 80%;
+            max-width: 600px;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+
+        .notification.success {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .notification.error {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 40px;
+            width: 60%;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .image-grid img {
+            width: 90%;
+            border-radius: 8px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-grid img:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        footer {
+            width: 100%;
+            text-align: center;
+            color: white;
+            padding: 20px 0;
+            background-color: #000000;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInDown {
+            0% {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="nav-bar" style="background-color: black; padding: 10px 0;">
+    <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="login.html">Sign Out</a></li>
+    </ul>
+</nav>
+
+<div class="outer-container">
+    <h1>Update Image Tags</h1>
+    <div class="form-container">
+        <input type="text" id="urlInput" placeholder="Enter a thumbnail URL">
+        <input type="text" id="tagTypeInput" placeholder="Enter tag type (0 for remove, 1 for add)">
+        <input type="text" id="tagsInput" placeholder="Enter tags (comma-separated)">
+        <button onclick="updateTags()">Submit</button>
+    </div>
+    <div class="notification" id="notification"></div>
+</div>
+
+<div class="image-grid" id="imageGrid"></div>
+    
+<footer>
+    <p>Front-end designed & developed by Mehyar Belal | Group 63 &copy; 2024</p>
+</footer>
+
+<script>
+    function showNotification(message, isSuccess) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.className = `notification ${isSuccess ? 'success' : 'error'}`;
+        notification.style.display = 'block';
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 3000);
+    }
+
+    async function updateTags() {
+        const url = document.getElementById('urlInput').value;
+        const tagType = parseInt(document.getElementById('tagTypeInput').value, 10);
+        const tags = document.getElementById('tagsInput').value.split(',').map(tag => tag.trim());
+
+        const bodyContent = {
+            url: [url], // Ensure URL is sent as an array
+            type: tagType,
+            tags: tags
+        };
+
+        console.log('Sending data:', bodyContent);
+
+        const response = await fetch('https://exiyl3ypwi.execute-api.us-east-1.amazonaws.com/Deployment/update_tags', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(bodyContent)
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            console.log('Tags updated successfully:', data);
+            showNotification('Tags updated successfully.', true);
+        } else {
+            console.error('Error updating tags:', data);
+            showNotification('Error updating tags: ' + (data.error || 'Unknown error occurred.'), false);
+        }
+    }
+</script>
+
+</body>
+</html>

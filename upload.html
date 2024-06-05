@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="./assets/favicon.png">
+    <link rel="stylesheet" href="./assets/style.css">
+    <title>Upload | PixTag</title>
+</head>
+<body>
+    <nav class="nav-bar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="login.html">Sign Out</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <section class="upload-section">
+            <img width="80px" height="80px" src="http://127.0.0.1:5500/Frontend/assets/favicon.png" alt="">
+            <br>
+            <h1>Upload an Image</h1>
+            <form class="upload-form">
+                <input type="file" id="fileUpload" accept="image/*">
+                <button type="submit">Upload</button>
+            </form>
+        </section>
+        <div class="notification" id="notification"></div>
+    </div>
+    
+    <footer>
+        <p>Front-end designed & developed by Mehyar Belal | Group 63 &copy; 2024</p>
+    </footer>
+
+    <style>
+        @keyframes slideInDown {
+            0% {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .nav-bar ul {
+            padding: 0;
+            margin: 0;
+            list-style-type: none;
+            text-align: center;
+        }
+
+        .nav-bar li {
+            display: inline;
+            margin-right: 15px;
+        }
+
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .upload-section {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .upload-section h1 {
+            font-size: 4em;
+            animation: slideInDown 1s ease-in-out;
+            margin: 0 0 20px 0;
+        }
+
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .upload-form input {
+            margin-bottom: 10px;
+        }
+
+        .notification {
+            width: 80%;
+            max-width: 600px;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+
+        .notification.success {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .notification.error {
+            background-color: #f44336;
+            color: white;
+        }
+
+        footer {
+            width: 100%;
+            text-align: center;
+            color: white;
+            padding: 20px 0;
+            background-color: #000000;
+            position: absolute;
+            bottom: 0;
+        }
+    </style>
+
+    <script>
+        function showNotification(message, isSuccess) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${isSuccess ? 'success' : 'error'}`;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadForm = document.querySelector('.upload-form');
+
+            uploadForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const fileInput = document.getElementById('fileUpload');
+                const file = fileInput.files[0];
+                if (!file) {
+                    showNotification('Please select a file to upload.', false);
+                    return;
+                }
+
+                fetch('https://q5v5rwwdal.execute-api.us-east-1.amazonaws.com/default/generate_presigned_url_for_upload', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name: file.name, type: file.type })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Response data:', data);
+
+                    if (typeof data.body === 'string') {
+                        data = JSON.parse(data.body);
+                    }
+
+                    const url = data.url;
+                    const fields = data.fields;
+
+                    if (!url || !fields) {
+                        throw new Error('Pre-signed URL or fields are missing in the response.');
+                    }
+
+                    const formData = new FormData();
+                    Object.entries(fields).forEach(([key, value]) => {
+                        formData.append(key, value);
+                    });
+                    formData.append('file', file);
+
+                    return fetch(url, {
+                        method: 'POST',
+                        body: formData
+                    });
+                })
+                .then(uploadResponse => {
+                    if (!uploadResponse.ok) {
+                        throw new Error('File upload to S3 failed.');
+                    }
+                    console.log('File successfully uploaded');
+                    showNotification('File uploaded successfully!', true);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('Error: ' + error.message, false);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

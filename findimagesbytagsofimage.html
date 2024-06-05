@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="./assets/favicon.png">
+    <link rel="stylesheet" href="./assets/style.css">
+    <title>Gallery | PixTag</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin: 0;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .nav-bar ul {
+            padding: 0;
+            margin: 0;
+            list-style-type: none;
+            text-align: center;
+        }
+
+        .nav-bar li {
+            display: inline;
+            margin-right: 15px;
+        }
+
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
+
+        .outer-container {
+            padding: 0em 20em;
+            text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .outer-container h1 {
+            font-size: 4em;
+            animation: slideInDown 1s ease-in-out;
+        }
+
+        .outer-container h4 {
+            margin-top: 20px;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        .search-container {
+            margin-top: 20px;
+            width: 80%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        .search-container input[type="file"] {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 30px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .search-container input[type="file"]:focus {
+            outline: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-container button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .search-container button:hover {
+            background-color: #003580;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .gallery img {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            max-height: 200px;
+            object-fit: cover;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+
+        .gallery img.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 40px;
+            width: 60%;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .image-grid img {
+            width: 100%;
+            border-radius: 8px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-grid img:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        footer {
+            width: 100%;
+            text-align: center;
+            color: white;
+            padding: 20px 0;
+            background-color: #000000;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInDown {
+            0% {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="nav-bar" style="background-color: black; padding: 10px 0; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);">
+    <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="login.html">Sign Out</a></li>
+    </ul>
+</nav>
+
+<div class="outer-container">
+    <h1>Find images by image tags</h1>
+    <h4>Upload an image to search similar images</h4>
+    <div class="search-container">
+        <input type="file" id="imageUpload" accept="image/*">
+        <button onclick="searchImages()">Submit</button>
+    </div>
+    <div id="gallery" class="gallery"></div>
+</div>
+
+<footer>
+    <p>Front-end designed & developed by Mehyar Belal | Group 63 &copy; 2024</p>
+</footer>
+
+<script>
+async function searchImages() {
+    const fileInput = document.getElementById('imageUpload');
+    const file = fileInput.files[0];
+    if (!file) {
+        alert('Please upload an image.');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async function(event) {
+        const base64Image = event.target.result.split(',')[1]; // Get base64 string without metadata
+        try {
+            const response = await fetch('https://ngsakftaug.execute-api.us-east-1.amazonaws.com/default/find_images_based_on_tags_of_an_image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ image: base64Image })
+            });
+
+            const result = await response.json();
+            const parsedBody = JSON.parse(result.body); // Parse the body string to JSON
+            console.log('Parsed Response:', parsedBody); // Log the parsed response
+
+            const gallery = document.getElementById('gallery');
+            gallery.innerHTML = '';
+
+            if (response.ok && parsedBody.links && parsedBody.links.length > 0) {
+                parsedBody.links.forEach((link, index) => {
+                    const img = document.createElement('img');
+                    img.src = link;
+                    img.alt = 'Image result';
+                    img.style.transitionDelay = `${index * 0.2}s`;
+                    img.addEventListener('load', () => {
+                        img.classList.add('loaded');
+                    });
+                    gallery.appendChild(img);
+                });
+            } else {
+                console.log('No images found');
+                gallery.textContent = 'No images found for the provided image.';
+            }
+        } catch (error) {
+            console.error('Error fetching images:', error);
+        }
+    };
+
+    reader.readAsDataURL(file);
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const images = document.querySelectorAll('.gallery img');
+
+    images.forEach(function (img) {
+        img.addEventListener('load', function () {
+            img.classList.add('loaded');
+        });
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | PixTag</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="./assets/favicon.png">
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.814.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            justify-content: center;
+            background-image: url('https://images.unsplash.com/photo-1591178761188-885caa0b4fc3?q=80&w=1479&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90oy1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+        }
+        header {
+            width: 100%;
+            text-align: center;
+            background-color: black;
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            font-size:2em;
+        }
+        nav ul {
+            display: flex;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        nav ul li {
+            margin: 0 15px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+        .container {
+     
+            background-color: white;
+            padding: 40px 80px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 320px;
+            text-align: center;
+            
+        }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        footer {
+            width: 100%;
+            text-align: center;
+            color: white;
+            padding: 10px 0;
+            background-color: black;
+            position: fixed;
+            bottom: 0;
+        }
+        footer p {
+            margin: 0;
+        }
+
+        .container p {
+            font-weight: 550;
+           
+        }
+
+        footer{
+    padding: 1.5em 0 !important;
+}
+
+    </style>
+</head>
+<body>
+    <header>
+        Sign Up
+ 
+    </header>
+    <div class="container">
+        <p>To Sign Up For an account, please complete the form below.</p>
+        <form id="signUpForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Password" required>
+            </div>
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" placeholder="First Name" required>
+            </div>
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" placeholder="Last Name" required>
+            </div>
+            <button type="submit">Sign Up</button>
+        </form>
+        <div id="verificationForm" style="display:none;">
+            <p>A verification code has been sent to your email. Please enter it below:</p>
+            <div class="form-group">
+                <label for="verificationCode">Verification Code</label>
+                <input type="text" id="verificationCode" placeholder="Verification Code" required>
+            </div>
+            <button id="verifyButton">Verify</button>
+        </div>
+
+        <p>Already have an account? <a href="login.html" style="color: #3498db; text-decoration: none;">Click to Login.</a></p>
+
+    </div>
+    <footer>
+        <p>Front-end designed & developed by Mehyar Belal | Group 63 &copy; 2024</p>
+    </footer>
+    
+    <script>
+        // Configure AWS SDK
+        AWS.config.region = 'us-east-1'; // Region
+        AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+            IdentityPoolId: 'us-east-1:cdc1614b-ca18-46eb-8b16-c09a64212901',
+        });
+
+        var cognito = new AWS.CognitoIdentityServiceProvider();
+
+        document.getElementById('signUpForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+
+            var params = {
+                ClientId: '50dkb0sdkpctoq4hh69v829bjv', // Your user pool client id here
+                Username: email,
+                Password: password,
+                UserAttributes: [
+                    { Name: 'email', Value: email },
+                    { Name: 'given_name', Value: firstName },
+                    { Name: 'family_name', Value: lastName },
+                ]
+            };
+
+            try {
+                const result = await cognito.signUp(params).promise();
+                console.log(result);
+                alert('Sign up successful! Please check your email for verification.');
+                document.getElementById('signUpForm').style.display = 'none';
+                document.getElementById('verificationForm').style.display = 'block';
+            } catch (error) {
+                console.error('Error signing up:', error);
+                alert('Error signing up: ' + error.message);
+            }
+        });
+
+        document.getElementById('verifyButton').addEventListener('click', async function () {
+            const email = document.getElementById('email').value;
+            const verificationCode = document.getElementById('verificationCode').value;
+
+            var params = {
+                ClientId: '50dkb0sdkpctoq4hh69v829bjv', // Your user pool client id here
+                Username: email,
+                ConfirmationCode: verificationCode
+            };
+
+            try {
+                const result = await cognito.confirmSignUp(params).promise();
+                console.log(result);
+                alert('Verification successful! You will be redirected to the login page.');
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Error verifying:', error);
+                alert('Error verifying: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>
