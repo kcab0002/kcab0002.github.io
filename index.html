@@ -466,7 +466,17 @@ border-radius: 10px;
         var userEmail = localStorage.getItem('userEmail');
       //  if (isAuthenticated !== null && isAuthenticated === 'true') {
          //   console.log("User is authenticated!");
-            document.getElementById('userEmail').textContent = 'Welcome, ' + userEmail;
+           
+
+            if (userEmail == null){
+                document.getElementById('userEmail').textContent = "Welcome";
+            } else if (userEmail == "null"){
+                document.getElementById('userEmail').textContent = "Welcome";
+            }
+            else {
+                document.getElementById('userEmail').textContent = 'Welcome, ' + userEmail;  
+            }
+
      //   } else {
          //   window.location.href = "login.html";
      //       alert("User is not authenticated!");
