@@ -31,6 +31,8 @@
             <label for="password">Password</label>
             <input type="password" id="password" placeholder="Password" required>
         </div>
+        <button onclick="signInWithGoogle()">Sign In with Google</button>
+
         <button type="submit">Login</button>
     </form>
 
@@ -95,6 +97,20 @@
     function create_account(){
         window.location.href = "signup.html"
     }
+
+
+
+    function signInWithGoogle() {
+    const clientId = '50dkb0sdkpctoq4hh69v829bjv'; // Your Cognito App Client ID
+    const domain = 'new-cognit.auth.us-east-1.amazoncognito.com'; // Your Cognito domain
+    const redirectUri = 'https://kcab0002.github.io'; // Your registered callback URL
+    const responseType = 'token'; // Use 'token' for implicit grant or 'code' for authorization code grant
+    const scope = 'email openid'; // Scope can be adjusted based on what information you need
+    const url = `https://${domain}/login?response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&identity_provider=Google`;
+
+    window.location.href = url;
+}
+
 </script>
 </body>
 </html>
