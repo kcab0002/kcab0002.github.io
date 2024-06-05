@@ -9,6 +9,7 @@
     <!-- Include AWS SDK for JavaScript -->
     <link rel="icon" type="image/x-icon" href="./assets/favicon.png">
     <script src="https://sdk.amazonaws.com/js/aws-sdk-2.814.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js@4.5.2/dist/amazon-cognito-identity.min.js"></script>
 </head>
 <body>
 
@@ -68,6 +69,7 @@
             // Set isAuthenticated flag only when login is successful
             localStorage.setItem('isAuthenticated', 'true');
             localStorage.setItem('userEmail', email);
+            localStorage.setItem('accessToken', result.AuthenticationResult.AccessToken); // Store access token
             alert('Login successful! Redirecting to home page.');
             window.location.href = 'index.html';
         } catch (error) {
@@ -79,16 +81,12 @@
     function create_account(){
         window.location.href = "signup.html";
     }
-
- 
-    
 </script>
 </body>
 </html>
 
 <style>
 body {
-
     font-family: 'Roboto', sans-serif;
     display: flex;
     justify-content: center;
