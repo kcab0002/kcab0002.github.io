@@ -8,19 +8,16 @@
     <title>Login | PixTag</title>
     <!-- Include AWS SDK for JavaScript -->
     <link rel="icon" type="image/x-icon" href="./assets/favicon.png">
-
     <script src="https://sdk.amazonaws.com/js/aws-sdk-2.814.0.min.js"></script>
 </head>
 <body>
 
 <header style="display:flex; justify-content: center; align-items: center; flex-direction: column;">
     <img width="50px" height="50px" src="./assets/favicon.png" alt="">
-   
     PixTag
 </header>
 
 <div class="container">
-
     <p>Enter your email & password to Login.</p>
     <form id="loginForm">
         <div class="form-group">
@@ -32,17 +29,14 @@
             <input type="password" id="password" placeholder="Password" required>
         </div>
         <button onclick="signInWithGoogle()">Sign In with Google</button>
-
         <button type="submit">Login</button>
     </form>
-
     <p style="color:#3498db; font-weight: 800; cursor: pointer;" onclick="create_account()">Create An Account </p>
 </div>
 
 <footer>
     <p>Front-end designed & developed by Mehyar Belal | Group 63 &copy; 2024</p>
 </footer>
-
 
 <script>
     // Configure AWS SDK
@@ -82,36 +76,23 @@
         }
     });
 
-    function login() {
-        // Perform login logic
-        // (For demonstration purposes, assume login is successful)
-        
-        // Set isAuthenticated flag only when login is successful
-        localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem('userEmail', email);
-        
-        // Redirect to the index page
-        window.location.href = "index.html";
-    }
-
     function create_account(){
-        window.location.href = "signup.html"
+        window.location.href = "signup.html";
     }
-
-
 
     function signInWithGoogle() {
-    const clientId = '4t62hj34iqid68n5s5q10a5h19'; // Your Cognito App Client ID
-    const domain = 'new-cognit.auth.us-east-1.amazoncognito.com'; // Your Cognito domain
-    const redirectUri = 'https://kcab0002.github.io/index.html'; // This must match one of the "Allowed callback URLs" in your Cognito setup
-    const responseType = 'code'; // Use 'code' for the Authorization Code Grant flow
-    const scope = 'email openid'; // Include any other scopes as per your requirement
-    const url = `https://${domain}/oauth2/authorize?response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&identity_provider=Google`;
+        const clientId = '4t62hj34iqid68n5s5q10a5h19'; // Your Cognito App Client ID
+        const domain = 'new-cognit.auth.us-east-1.amazoncognito.com'; // Your Cognito domain
+        const redirectUri = 'https://kcab0002.github.io/index.html'; // This must match one of the "Allowed callback URLs" in your Cognito setup
+        const responseType = 'code'; // Use 'code' for the Authorization Code Grant flow
+        const scope = 'email openid'; // Include any other scopes as per your requirement
+        const url = `https://${domain}/oauth2/authorize?response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&identity_provider=Google`;
 
-    window.location.href = url;
-}
+        window.location.href = url;
+    }
 
 
+    
 </script>
 </body>
 </html>
@@ -165,7 +146,6 @@ h3 {
 label {
     display: block;
     margin-bottom: 5px;
-
     color: #333; /* Text color */
 }
 
