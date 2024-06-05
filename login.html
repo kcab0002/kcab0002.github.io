@@ -103,7 +103,7 @@
     function signInWithGoogle() {
     const clientId = '50dkb0sdkpctoq4hh69v829bjv'; // Your Cognito App Client ID
     const domain = 'new-cognit.auth.us-east-1.amazoncognito.com'; // Your Cognito domain
-    const redirectUri = 'https://kcab0002.github.io'; // Your registered callback URL
+    const redirectUri = 'https://kcab0002.github.io/index.html'; // Your registered callback URL
     const responseType = 'token'; // Use 'token' for implicit grant or 'code' for authorization code grant
     const scope = 'email openid'; // Scope can be adjusted based on what information you need
     const url = `https://${domain}/login?response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&identity_provider=Google`;
